@@ -1,2 +1,2 @@
 # To-Do-List
-To Do list app
+A To Do list app project.
