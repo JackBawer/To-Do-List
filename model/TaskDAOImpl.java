@@ -13,7 +13,7 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public Task get(int id) throws SQLException {
-        String sql = "SELECT id, title, description, deadline, priority, status, date_issued, completed_at, user_id FROM tasks WHERE id = ? AND is_deleted = FALSE";
+        String sql = "SELECT id, title, description, deadline, priority, status, date_issued, completed_at, user_id, is_deleted FROM tasks WHERE id = ? AND is_deleted = FALSE";
 
         try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -32,11 +32,11 @@ public class TaskDAOImpl implements TaskDAO {
                     Timestamp completedAtTs = rs.getTimestamp("completed_at");
                     LocalDateTime completedAt = (completedAtTs != null) ? completedAtTs.toLocalDateTime() : null;
                     int userId = rs.getInt("user_id");
+                    boolean isDeleted = rs.getBoolean("is_deleted");
 
                     Priority priorityEnum = Priority.valueOf(priority);
                     Status statusEnum = Status.valueOf(status);
 
-                    boolean isDeleted = rs.getBoolean("is_deleted");
                     return new Task(retrievedId, title, description, deadline, priorityEnum, statusEnum, userId, dateIssued, completedAt, isDeleted);
                 }
                 return null;
@@ -46,7 +46,7 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public List<Task> getAll() throws SQLException {
-        String sql = "SELECT id, title, description, deadline, priority, status, date_issued, completed_at, user_id FROM tasks WHERE is_deleted = FALSE";
+        String sql = "SELECT id, title, description, deadline, priority, status, date_issued, completed_at, user_id, is_deleted FROM tasks WHERE is_deleted = FALSE";
 
         try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -65,11 +65,12 @@ public class TaskDAOImpl implements TaskDAO {
                 Timestamp completedAtTs = rs.getTimestamp("completed_at");
                 LocalDateTime completedAt = (completedAtTs != null) ? completedAtTs.toLocalDateTime() : null;
                 int userId = rs.getInt("user_id");
+                boolean isDeleted = rs.getBoolean("is_deleted");
 
                 Priority priorityEnum = Priority.valueOf(priority);
                 Status statusEnum = Status.valueOf(status);
 
-                Task task = new Task(id, title, description, deadline, priorityEnum, statusEnum, userId, dateIssued, completedAt, false);
+                Task task = new Task(id, title, description, deadline, priorityEnum, statusEnum, userId, dateIssued, completedAt, isDeleted);
                 tasks.add(task);
             }
             return tasks;
@@ -86,6 +87,7 @@ public class TaskDAOImpl implements TaskDAO {
             return insert(task);
         }
     }
+
     @Override
     public int insert(Task task) throws SQLException {
         try (Connection con = Database.getConnection();

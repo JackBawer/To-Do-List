@@ -1,42 +1,30 @@
 package model;
 
-import service.TaskService;
-
-import java.sql.SQLException;
-import java.time.LocalDateTime;
+import control.UserController;
 
 public class Main {
     public static void main(String[] args) {
-        TaskService taskService = new TaskService();
+        UserController userController = new UserController();
 
-        try {
-            // Add a new task
-            Task newTask = new Task(0, "Test Task", "This is a test task", LocalDateTime.now().plusDays(1), Priority.HIGH, Status.TODO, 1, LocalDateTime.now(), null, false);
-            taskService.saveTask(newTask);
-            System.out.println("Task added successfully.");
+        // Add a new user
+        userController.addUser("newuser");
 
-            // List all tasks
-            System.out.println("All tasks:");
-            taskService.getAllTasks().forEach(System.out::println);
+        // List all users
+        System.out.println("All users:");
+        userController.listAllUsers();
 
-            // Update task status
-            taskService.updateTaskStatus(newTask.getId(), "IN_PROGRESS");
-            System.out.println("Task status updated successfully.");
+        // Update user
+        userController.updateUser(1, "updateduser");
 
-            // List all tasks
-            System.out.println("All tasks after status update:");
-            taskService.getAllTasks().forEach(System.out::println);
+        // Get user by ID
+        System.out.println("User with ID 1:");
+        System.out.println(userController.getUser(1));
 
-            // Delete a task
-            taskService.deleteTask(newTask);
-            System.out.println("Task deleted successfully.");
+        // Delete user
+        userController.deleteUser(1);
 
-            // List all tasks
-            System.out.println("All tasks after deletion:");
-            taskService.getAllTasks().forEach(System.out::println);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        // List all users again to confirm deletion
+        System.out.println("All users after deletion:");
+        userController.listAllUsers();
     }
 }
