@@ -1,7 +1,5 @@
 package model;
 
-import model.Task;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -46,7 +44,7 @@ public class ReminderService {
     }
 
     private List<Task> getUndoneTasks(Connection connection) throws SQLException {
-        String sql = "SELECT * FROM tasks WHERE status <> COMPLETED";
+        String sql = "SELECT * FROM tasks WHERE status <> 'COMPLETED'";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             System.currentTimeMillis();
@@ -61,7 +59,11 @@ public class ReminderService {
                                 resultSet.getString("description"),
                                 resultSet.getTimestamp("deadline").toLocalDateTime(),
                                 (Priority) resultSet.getObject("Status"),
-                                (Status) resultSet.getObject("Priority"));
+                                (Status) resultSet.getObject("Priority"),
+                                resultSet.getInt("user_id"),
+                                resultSet.getTimestamp("date_issued").toLocalDateTime(),
+                                resultSet.getTimestamp("completed_at").toLocalDateTime(),
+                                resultSet.getBoolean("is_deleted"));
                 tasks.add(task);
             }
         return tasks;
