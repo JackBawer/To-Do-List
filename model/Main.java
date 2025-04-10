@@ -1,38 +1,30 @@
 package model;
 
-import org.postgresql.ds.PGSimpleDataSource;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.concurrent.ScheduledExecutorService;
-import javax.sql.DataSource;
+import control.UserController;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
-         //Connection con = Database.getConnection();
+    public static void main(String[] args) {
+        UserController userController = new UserController();
 
-         TaskDAO taskDAO = new TaskDAOImpl();
+        // Add a new user
+        userController.addUser("newuser");
 
-         Task task = taskDAO.get(3);
+        // List all users
+        System.out.println("All users:");
+        userController.listAllUsers();
 
-         DataSource ds = createDB();
+        // Update user
+        userController.updateUser(1, "updateduser");
 
-         ReminderService rs = new ReminderService(ds);
+        // Get user by ID
+        System.out.println("User with ID 1:");
+        System.out.println(userController.getUser(1));
 
-         rs.start();
+        // Delete user
+        userController.deleteUser(1);
 
-         System.out.println(task);
-
-         rs.stop();
-    }
-
-    public static DataSource createDB() {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUser("postgres");
-        dataSource.setURL("jdbc:postgresql://localhost:5432/postgres");
-        dataSource.setPassword("12345");
-        return dataSource;
+        // List all users again to confirm deletion
+        System.out.println("All users after deletion:");
+        userController.listAllUsers();
     }
 }
-
