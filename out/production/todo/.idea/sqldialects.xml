@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/b57574e2-cdde-4e5c-a02e-a77293231945/console.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/out/production/todo/migrations/002_add_due_date.sql" dialect="PostgreSQL" />
+    <file url="file://Z:/Downloads/todo.sql" dialect="PostgreSQL" />
   </component>
 </project>
