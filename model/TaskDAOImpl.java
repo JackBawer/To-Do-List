@@ -142,4 +142,71 @@ public class TaskDAOImpl implements TaskDAO {
             return 0;
         }
     }
+
+    // Filtrer les tâches par statut
+    public List<Task> getTasksByStatus(String status) throws SQLException {
+        String sql = "SELECT id, title, description, deadline, priority, status FROM tasks WHERE status = '" + status + "'";
+        List<Task> tasks = new ArrayList<>();
+
+        try (Connection con = Database.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Task task = new Task(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getTimestamp("deadline").toLocalDateTime(),
+                    Priority.valueOf(rs.getString("priority").toUpperCase()),
+                    Status.valueOf(rs.getString("status").toUpperCase())
+                );
+                tasks.add(task);
+            }
+        }
+
+        return tasks;
+    }
+
+    // Trier les tâches
+    public List<Task> getTasksSorted(String sortBy, String order) throws SQLException {
+        String column;
+        switch (sortBy) {
+            case "priority": column = "priority"; break;
+            case "category": column = "c.name"; break;
+            case "date":
+            default: column = "deadline"; break;
+        }
+
+        String sortOrder = (order != null && order.equalsIgnoreCase("desc")) ? "DESC" : "ASC";
+
+        String sql = sortBy.equals("category")
+            ? "SELECT t.id, t.title, t.description, t.deadline, t.priority, t.status " +
+              "FROM tasks t " +
+              "LEFT JOIN task_categories tc ON t.id = tc.task_id " +
+              "LEFT JOIN categories c ON tc.category_id = c.id " +
+              "ORDER BY " + column + " " + sortOrder
+            : "SELECT id, title, description, deadline, priority, status FROM tasks ORDER BY " + column + " " + sortOrder;
+
+        List<Task> tasks = new ArrayList<>();
+
+        try (Connection con = Database.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Task task = new Task(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getTimestamp("deadline").toLocalDateTime(),
+                    Priority.valueOf(rs.getString("priority").toUpperCase()),
+                    Status.valueOf(rs.getString("status").toUpperCase())
+                );
+                tasks.add(task);
+            }
+        }
+
+        return tasks;
+    }
 }
