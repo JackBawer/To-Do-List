@@ -39,4 +39,12 @@ public class TaskService {
         }
         return 0;
     }
+    
+     public List<Task> getTasksByStatus(String status) throws SQLException {
+        return taskDAO.getTasksByStatus(status);
+    }
+
+    public List<Task> getTasksSorted(String sortBy, String order) throws SQLException {
+        return taskDAO.getTasksSorted(sortBy, order);
+    }
 }
