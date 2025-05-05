@@ -61,7 +61,7 @@ public class TaskController {
     // Filter by status
 public List<Task> getTasksByStatus(String status) {
     try {
-        return taskDAO.getTasksByStatus(status);
+        return taskService.getTasksByStatus(status);
     } catch (SQLException e) {
         System.err.println("Failed to filter tasks by status.");
         return null;
@@ -71,7 +71,7 @@ public List<Task> getTasksByStatus(String status) {
 // Sort tasks
 public List<Task> getTasksSorted(String sortBy, String order) {
     try {
-        return taskDAO.getTasksSorted(sortBy, order);
+        return taskService.getTasksSorted(sortBy, order);
     } catch (SQLException e) {
         System.err.println("Failed to sort tasks.");
         return null;
